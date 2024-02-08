@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Form</title>
+</head>
+<body>
+    <div class="column">
+         <h2>Запись на услугу</h2>
+         <form id="myForm" method="post">
+
+            <label for="select_date">Дата:</label>
+            <input type="date" id="select_date" name="select_date" required>
+
+            <br>
+
+            <label for="select_time">Время:</label>
+            <input type="time" id="select_time" name="select_time" required>
+
+             <br>
+
+            <label for="input_text1">Мастер:</label>
+            <input type="text" id="input_text1" name="input_text1" required>
+
+            <br>
+
+            <label for="input_text2">Услуга:</label>
+            <input type="text" id="input_text2" name="input_text2" required>
+            <br>
+            <button type="button" onclick="submitForm()">Отправить</button>
+         </form>
+    </div>
+    <div class="column">
+        <h2>Информация о себе</h2>
+        <form id="clientForm" method="post" >
+            <label for="input_text">ФИО:</label>
+            <input type="text" id="input_text" name="input_text" required>
+            <br>
+            <label for="input_phone">Телефон:</label>
+            <input type="tel" id="input_phone" name="input_phone" required>
+            <br>
+            <label for="email">АдресЭП:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="dob">Дата рождения:</label>
+            <input type="date" id="dob" name="dob" required>
+            <br>
+        </form>
+    </div>
+
+    <script>
+        function submitForm() {
+            var formData1 = new FormData(document.getElementById('myForm'));
+            var formData2 = new FormData(document.getElementById('clientForm'));
+            // Объединяем данные из обеих форм в один объект FormData
+            for (var pair of formData2.entries()) {
+                 formData1.append(pair[0], pair[1]);
+            }
+            var xhr = new XMLHttpRequest(); //
+            xhr.open("POST", "/submit", true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    console.log(xhr.responseText);
+                }
+            };
+            xhr.send(formData1);
+
+        }
+    </script>
+
+
+
+</body>
+</html>
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+         background-color: #fff7e6; /* Цвет фона, замените на ваш выбор */
+    }
+
+    form {
+        text-align: center;
+        background-color: #fff; /* Цвет фона формы, замените на ваш выбор */
+        padding: 20px;
+        border-radius: 8px; /* Добавление скругленных углов форме */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень для формы */
+    }
+
+    label, input, select, button {
+        margin: 5px;
+    }
+</style>
