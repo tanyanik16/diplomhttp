@@ -1,9 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 import requests
+from google_calendar import GoogleCalendar  # Подключение класса GoogleCalendar из вашего файла google_calendar.py
+import pprint
 
 
 app = Flask(__name__)
 
+obj=GoogleCalendar()
 def отправить_данные(data):
     url = 'http://localhost/salon/hs/wdoc/note'
     username = 'bromuser'
@@ -69,9 +72,7 @@ def submit():
     return jsonify(результат)
     return jsonify(результатsp)
 
-    #ОТПРАВКА СООБЩЕНИЯ НА ПОЧТУ
 
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
