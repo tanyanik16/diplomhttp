@@ -21,6 +21,20 @@ def отправить_данные(data):
         print('Ошибка при отправке запроса:', e)
         return {'error': 'Ошибка при отправке запроса'}
 
+def отправить_данныесправочник(datasp):
+    url = 'http://localhost/salon/hs/wdoc/dd'
+    username = 'bromuser'
+    password = ''
+
+    try:
+        response = requests.post(url, json=datasp, auth=(username, password))
+        response.raise_for_status()  # Генерировать исключение при ошибке HTTP
+        print("Код состояния HTTP ответа:", response.status_code)
+        print("Ответ от сервера:", response.content.decode('utf-8'))
+        return response.json()  # Возвращаем JSON ответ от сервера
+    except requests.exceptions.RequestException as e:
+        print('Ошибка при отправке запроса:', e)
+        return {'error': 'Ошибка при отправке запроса'}
 
 
 @app.route('/')
@@ -34,7 +48,9 @@ def submit():
     мастер = request.form['input_text1']
     клиент = request.form['input_text']
     датаИВремя = f"{request.form['select_date']}T{request.form['select_time']}"
-
+    Телефон=request.form['input_phone']
+    АдресЭП=request.form['email']
+    ДатаРождения=f"{request.form['dob']}"
     # Формируем словарь данных
     data = {
         "Услуга": услуга,
@@ -42,11 +58,19 @@ def submit():
         "Клиент": клиент,
         "ДатаИВремя": датаИВремя
     }
+    datasp={
+        "Наименование": клиент,
+        "Телефон": Телефон,
+        "АдресЭП": АдресЭП,
+        "ДатаРождения": ДатаРождения
+    }
     print(data)
     print("Отправляемые данные:", data)
     результат = отправить_данные(data)
+    результатsp = отправить_данныесправочник(datasp)
     # Отправляем данные в виде JSON
     return jsonify(результат)
+    return jsonify(результатsp)
 
 
 
