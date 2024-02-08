@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, jsonify
 import requests
 
+
 app = Flask(__name__)
-
-
-
 
 def отправить_данные(data):
     url = 'http://localhost/salon/hs/wdoc/note'
@@ -64,7 +62,6 @@ def submit():
         "АдресЭП": АдресЭП,
         "ДатаРождения": ДатаРождения
     }
-    print(data)
     print("Отправляемые данные:", data)
     результат = отправить_данные(data)
     результатsp = отправить_данныесправочник(datasp)
@@ -72,8 +69,9 @@ def submit():
     return jsonify(результат)
     return jsonify(результатsp)
 
+    #ОТПРАВКА СООБЩЕНИЯ НА ПОЧТУ
 
-
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
