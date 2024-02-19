@@ -77,12 +77,28 @@ def получить_данныесправочникУслуги():
         print("Ошибка:", response.status_code)
         return None
 
+def получить_данныесправочникСотрудники():
+    url = 'http://localhost/salon/hs/wdoc/master'
+    username = 'bromuser'
+    password = ''
+
+    response = requests.get(url, auth=(username, password))
+
+    if response.status_code == 200:
+        response_text = response.text
+        master = json.loads(response_text)
+        наименование_сотрудники = [item["Наименование"] for item in master]
+        return наименование_сотрудники
+    else:
+        print("Ошибка:", response.status_code)
+        return None
 
 #РАБОТА С WEB-САЙТОМ
 @app.route('/')
 def index():
     наименование_услуги = получить_данныесправочникУслуги()
-    return render_template('index.html',services=наименование_услуги)
+    наименование_сотрудники=получить_данныесправочникСотрудники()
+    return render_template('index.html',services=наименование_услуги, masters=наименование_сотрудники)
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -114,6 +130,7 @@ def submit():
     результат = отправить_данные(data)
     результатsp = отправить_данныесправочник(datasp)
     наименование_услуги = получить_данныесправочникУслуги()
+    наименование_сотрудники = получить_данныесправочникСотрудники()
     # Отправляем данные в виде JSON
 
     #дОБАВЛЕНИЕ данных в гугл календарь
