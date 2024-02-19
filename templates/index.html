@@ -35,9 +35,12 @@
             <input type="text" id="input_text1" name="input_text1" required>
 
             <br>
-
             <label for="input_text2">Услуга:</label>
-            <input type="text" id="input_text2" name="input_text2" required>
+             <select id="input_text2" name="input_text2">
+                {% for service in services %}
+                <option>{{ service }}</option>
+                {% endfor %}
+            </select>
             <br>
             <button type="button" onclick="submitForm()">Отправить</button>
          </form>
@@ -59,7 +62,7 @@
             <br>
         </form>
     </div>
-
+    <div id="message"></div>
     <script>
         function submitForm() {
             var formData1 = new FormData(document.getElementById('myForm'));
@@ -76,14 +79,8 @@
                 }
             };
             xhr.send(formData1);
-
-
-
         }
     </script>
-
-
-
 </body>
 </html>
 <style>

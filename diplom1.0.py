@@ -3,7 +3,7 @@ import requests
 import pprint
 from google.oauth2 import service_account
 from googleapiclient.discovery import  build
-
+import json
 
 app = Flask(__name__)
 
@@ -61,10 +61,28 @@ def отправить_данныесправочник(datasp):
         print('Ошибка при отправке запроса:', e)
         return {'error': 'Ошибка при отправке запроса'}
 
+def получить_данныесправочникУслуги():
+    url = 'http://localhost/salon/hs/wdoc/service'
+    username = 'bromuser'
+    password = ''
+
+    response = requests.get(url, auth=(username, password))
+
+    if response.status_code == 200:
+        response_text = response.text
+        service = json.loads(response_text)
+        наименование_услуги = [item["Наименование"] for item in service]
+        return наименование_услуги
+    else:
+        print("Ошибка:", response.status_code)
+        return None
+
+
 #РАБОТА С WEB-САЙТОМ
 @app.route('/')
 def index():
-    return render_template('index.html')
+    наименование_услуги = получить_данныесправочникУслуги()
+    return render_template('index.html',services=наименование_услуги)
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -74,9 +92,11 @@ def submit():
     клиент = request.form['input_text']
     датаИВремя = f"{request.form['select_date']}T{request.form['select_time']}"
     дата=f"{request.form['select_date']}T{request.form['select_time']}:00+03:00"
+    датак = f"{request.form['select_date']}T{request.form['select_time']}:00+01:00"
     Телефон=request.form['input_phone']
     АдресЭП=request.form['email']
     ДатаРождения=f"{request.form['dob']}"
+
     # Формируем словарь данных
     data = {
         "Услуга": услуга,
@@ -93,12 +113,12 @@ def submit():
     print("Отправляемые данные:", data)
     результат = отправить_данные(data)
     результатsp = отправить_данныесправочник(datasp)
+    наименование_услуги = получить_данныесправочникУслуги()
     # Отправляем данные в виде JSON
 
     #дОБАВЛЕНИЕ данных в гугл календарь
     obj = GoogleCalendar()
     calendar = 'tanya.nikiforova2002@gmail.com'
-
     event = {
         'summary': услуга,
         'location': 'Москва',
@@ -108,7 +128,7 @@ def submit():
 
         },
         'end': {
-            'dateTime': дата
+            'dateTime': датак
 
         }
     }
