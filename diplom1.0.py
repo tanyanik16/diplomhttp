@@ -94,7 +94,7 @@ def получить_данныесправочникСотрудники():
         print("Ошибка:", response.status_code)
         return None
 
-def получить_данныедокументЗапись():
+def получить_данныедокументЗаписьДата():
     url = 'http://localhost/salon/hs/wdoc/note'
     username = 'bromuser'
     password = ''
@@ -104,10 +104,24 @@ def получить_данныедокументЗапись():
         data = json.loads(response_text)
         дата_запись = [item["Дата"] for item in data]
         return дата_запись
+
+    else:
+        print("Ошибка1:", response.status_code)
+        return None
+
+def получить_данныедокументЗаписьСотрудник():
+    url = 'http://localhost/salon/hs/wdoc/note'
+    username = 'bromuser'
+    password = ''
+    response = requests.get(url, auth=(username, password))
+    if response.status_code == 200:
+        response_text = response.text
+        data = json.loads(response_text)
+        сотрудник_запись=[item["Сотрудник"] for item in data]
+        return сотрудник_запись
     else:
         print("Ошибка:", response.status_code)
         return None
-
 
 #РАБОТА С WEB-САЙТОМ
 @app.route('/')
@@ -144,17 +158,44 @@ def submit():
     }
 
     #Проверка если документ сущшествует на текущую дату и время выводит сообщение в консоль об этом
-    датаИсотрудник=получить_данныедокументЗапись()
-    датаИсотрудникпреобраз=[datetime.strptime(дата, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M") for дата in датаИсотрудник]
+    дата1=получить_данныедокументЗаписьДата()
+    сотрудник=получить_данныедокументЗаписьСотрудник()
+    датаИсотрудникпреобраз=[datetime.strptime(дата, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M") for дата in дата1]
 
-    if датаИВремя in датаИсотрудникпреобраз:
-        print("Документ на текущую дату и время уже существует.")
-    else:
-        print("Документ на текущую дату и время не существует.")
+
+
+    print(датаИсотрудникпреобраз)
+    print(сотрудник)
+    print(мастер)
+
+    if датаИВремя in датаИсотрудникпреобраз and мастер not in сотрудник:
+        print(f"Документ на  не существует1.{датаИВремя}{датаИсотрудникпреобраз}{мастер}{сотрудник}")
         результат = отправить_данные(data)
         результатsp = отправить_данныесправочник(datasp)
+        return jsonify(результат)
+        return jsonify(результатsp)
+    elif датаИВремя not in датаИсотрудникпреобраз and мастер in сотрудник:
+        print(f"Документ на текущую дату и время не существует2.{датаИВремя}{датаИсотрудникпреобраз}{мастер}{сотрудник}")
+        результат = отправить_данные(data)
+        результатsp = отправить_данныесправочник(datasp)
+        return jsonify(результат)
+        return jsonify(результатsp)
+    elif датаИВремя not in датаИсотрудникпреобраз and мастер not in сотрудник:
+        print(f"Документ на текущую дату и время не существует3.{датаИВремя}{датаИсотрудникпреобраз}{мастер}{сотрудник}")
+        результат = отправить_данные(data)
+        результатsp = отправить_данныесправочник(datasp)
+        return jsonify(результат)
+        return jsonify(результатsp)
+    elif датаИВремя in датаИсотрудникпреобраз and мастер  in сотрудник:
+        print('hdsjd')
+        return jsonify({"message": "Мастер ззанят на данную дату и время ."})
 
-
+    # if датаИВремя in датаИсотрудникпреобраз:
+    #     print("Документ на текущую дату и время уже существует.")
+    # else:
+    #     print("Документ на текущую дату и время не существует.")
+    #     результат = отправить_данные(data)
+    #     результатsp = отправить_данныесправочник(datasp)
 
     print("Отправляемые данные:", data)
 
@@ -163,26 +204,24 @@ def submit():
     # Отправляем данные в виде JSON
 
     #дОБАВЛЕНИЕ данных в гугл календарь
-    obj = GoogleCalendar()
-    calendar = 'tanya.nikiforova2002@gmail.com'
-    event = {
-        'summary': услуга,
-        'location': 'Москва',
-        'description': 'nn',
-        'start': {
-            'dateTime': дата
+    # obj = GoogleCalendar()
+    # calendar = 'tanya.nikiforova2002@gmail.com'
+    # event = {
+    #     'summary': услуга,
+    #     'location': 'Москва',
+    #     'description': 'nn',
+    #     'start': {
+    #         'dateTime': дата
+    #
+    #     },
+    #     'end': {
+    #         'dateTime': датак
+    #
+    #     }
+    # }
+    # event= obj.add_event(calendar_id=calendar, body=event)
+    # pprint.pp(obj.get_calendar_list())
 
-        },
-        'end': {
-            'dateTime': датак
-
-        }
-    }
-    event= obj.add_event(calendar_id=calendar, body=event)
-    pprint.pp(obj.get_calendar_list())
-
-    return jsonify(результат)
-    return jsonify(результатsp)
 
 
 if __name__ == '__main__':
