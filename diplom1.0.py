@@ -4,6 +4,7 @@ import pprint
 from google.oauth2 import service_account
 from googleapiclient.discovery import  build
 import json
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -93,6 +94,21 @@ def получить_данныесправочникСотрудники():
         print("Ошибка:", response.status_code)
         return None
 
+def получить_данныедокументЗапись():
+    url = 'http://localhost/salon/hs/wdoc/note'
+    username = 'bromuser'
+    password = ''
+    response = requests.get(url, auth=(username, password))
+    if response.status_code == 200:
+        response_text = response.text
+        data = json.loads(response_text)
+        дата_запись = [item["Дата"] for item in data]
+        return дата_запись
+    else:
+        print("Ошибка:", response.status_code)
+        return None
+
+
 #РАБОТА С WEB-САЙТОМ
 @app.route('/')
 def index():
@@ -126,9 +142,22 @@ def submit():
         "АдресЭП": АдресЭП,
         "ДатаРождения": ДатаРождения
     }
+
+    #Проверка если документ сущшествует на текущую дату и время выводит сообщение в консоль об этом
+    датаИсотрудник=получить_данныедокументЗапись()
+    датаИсотрудникпреобраз=[datetime.strptime(дата, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M") for дата in датаИсотрудник]
+
+    if датаИВремя in датаИсотрудникпреобраз:
+        print("Документ на текущую дату и время уже существует.")
+    else:
+        print("Документ на текущую дату и время не существует.")
+        результат = отправить_данные(data)
+        результатsp = отправить_данныесправочник(datasp)
+
+
+
     print("Отправляемые данные:", data)
-    результат = отправить_данные(data)
-    результатsp = отправить_данныесправочник(datasp)
+
     наименование_услуги = получить_данныесправочникУслуги()
     наименование_сотрудники = получить_данныесправочникСотрудники()
     # Отправляем данные в виде JSON
@@ -154,6 +183,7 @@ def submit():
 
     return jsonify(результат)
     return jsonify(результатsp)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
