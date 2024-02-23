@@ -62,6 +62,40 @@ def отправить_данныесправочник(datasp):
         print('Ошибка при отправке запроса:', e)
         return {'error': 'Ошибка при отправке запроса'}
 
+def получить_данныесправочникУслуги():
+    url = 'http://localhost/salon/hs/wdoc/service'
+    username = 'bromuser'
+    password = ''
+
+    response = requests.get(url, auth=(username, password))
+
+    if response.status_code == 200:
+        response_text = response.text
+        service = json.loads(response_text)
+        наименование_услуги = [item["Наименование"] for item in service]
+        return наименование_услуги
+    else:
+        print("Ошибка2:", response.status_code)
+        return None
+
+
+
+def получить_данныесправочникСотрудники():
+    url = 'http://localhost/salon/hs/wdoc/master'
+    username = 'bromuser'
+    password = ''
+
+    response = requests.get(url, auth=(username, password))
+
+    if response.status_code == 200:
+        response_text = response.text
+        master = json.loads(response_text)
+        наименование_сотрудники = [item["Наименование"] for item in master]
+        return наименование_сотрудники
+    else:
+        print("Ошибка1:", response.status_code)
+        return None
+
 
 def получить_данные_документов():
     url = 'http://localhost/salon/hs/wdoc/note'
