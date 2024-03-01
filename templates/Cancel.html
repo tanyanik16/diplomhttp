@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Данные записи</title>
+</head>
+<body>
+    <h1>Данные записи</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Сотрудник</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for запись in данные %}
+            <tr>
+                <td>{{ запись["Дата"] }}</td>
+                <td>{{ запись["Сотрудник"] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

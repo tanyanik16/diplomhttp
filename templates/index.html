@@ -5,8 +5,59 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask Form</title>
+    <style>
+
+        .menu {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+       background-color: #ff1f1;
+       position: fixed;
+       width: 100%;
+       top: 0;
+       left: 0;
+       }
+
+        .menu li {
+            float: left;
+        }
+
+        .menu li a {
+          display: block;
+          padding: 8px 16px;
+          text-decoration: none;
+          color: #333;
+        }
+        .menu li a:hover {
+            background-color: #ddd;
+        }
+
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+             background-color: #fff7e6; /* Цвет фона, замените на ваш выбор */
+        }
+        form {
+            text-align: center;
+            background-color: #fff; /* Цвет фона формы, замените на ваш выбор */
+            padding: 20px;
+            border-radius: 8px; /* Добавление скругленных углов форме */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень для формы */
+        }
+        label, input, select, button {
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
+        <div class="menu">
+            <li><a href="/index">Главная</a></li>
+            <li><a href="/Cancel">Отменить запись</a></li>
+        </div>
 
         <div class="column">
 
@@ -92,23 +143,4 @@
 
 </body>
 </html>
-<style>
-    body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-         background-color: #fff7e6; /* Цвет фона, замените на ваш выбор */
-    }
-    form {
-        text-align: center;
-        background-color: #fff; /* Цвет фона формы, замените на ваш выбор */
-        padding: 20px;
-        border-radius: 8px; /* Добавление скругленных углов форме */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень для формы */
-    }
-    label, input, select, button {
-        margin: 5px;
-    }
-</style>
+
