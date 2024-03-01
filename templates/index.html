@@ -7,84 +7,89 @@
     <title>Flask Form</title>
 </head>
 <body>
-    <div class="column">
-         <h2>Запись на услугу</h2>
-         <form id="myForm" method="post">
 
-            <label for="select_date">Дата:</label>
-            <input type="date" id="select_date" name="select_date" required>
+        <div class="column">
 
-            <br>
+             <h2>Запись на услугу</h2>
+             <form id="myForm" method="post">
 
-            <label for="select_time">Время:</label>
-            <select id="select_time" name="select_time" required>
-                <option value="09:00">09:00</option>
-                <option value="10:00">10:00</option>
-                <option value="11:00">11:00</option>
-                <option value="12:00">12:00</option>
-                <option value="13:00">13:00</option>
-                <option value="14:00">14:00</option>
-                <option value="15:00">15:00</option>
-                <option value="16:00">16:00</option>
-                <option value="17:00">17:00</option>
-                <option value="18:00">18:00</option>
-            </select>
-             <br>
+                <label for="select_date">Дата:</label>
+                <input type="date" id="select_date" name="select_date" required>
 
-            <label for="input_text1">Мастер:</label>
-            <select id="input_text1" name="input_text1">
-                {% for master in masters %}
-                <option>{{ master }}</option>
-                {% endfor %}
-            </select>
+                <br>
 
-            <br>
-            <label for="input_text2">Услуга:</label>
-             <select id="input_text2" name="input_text2">
-                {% for service in services %}
-                <option>{{ service }}</option>
-                {% endfor %}
-            </select>
-            <br>
-            <button type="button" onclick="submitForm()">Отправить</button>
-         </form>
-    </div>
-    <div class="column">
-        <h2>Информация о себе</h2>
-        <form id="clientForm" method="post" >
-            <label for="input_text">ФИО:</label>
-            <input type="text" id="input_text" name="input_text" required>
-            <br>
-            <label for="input_phone">Телефон:</label>
-            <input type="tel" id="input_phone" name="input_phone" required>
-            <br>
-            <label for="email">АдресЭП:</label>
-            <input type="email" id="email" name="email" required>
-            <br>
-            <label for="dob">Дата рождения:</label>
-            <input type="date" id="dob" name="dob" required>
-            <br>
-        </form>
-    </div>
-    <div id="message"></div>
-    <script>
-        function submitForm() {
-            var formData1 = new FormData(document.getElementById('myForm'));
-            var formData2 = new FormData(document.getElementById('clientForm'));
-            // Объединяем данные из обеих форм в один объект FormData
-            for (var pair of formData2.entries()) {
-                 formData1.append(pair[0], pair[1]);
-            }
-            var xhr = new XMLHttpRequest(); //
-            xhr.open("POST", "/submit", true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    console.log(xhr.responseText);
+                <label for="select_time">Время:</label>
+                <select id="select_time" name="select_time" required>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="12:00">12:00</option>
+                    <option value="13:00">13:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                    <option value="17:00">17:00</option>
+                    <option value="18:00">18:00</option>
+                </select>
+                 <br>
+
+                <label for="input_text1">Мастер:</label>
+                <select id="input_text1" name="input_text1">
+                    {% for master in masters %}
+                    <option>{{ master }}</option>
+                    {% endfor %}
+                </select>
+
+                <br>
+                <label for="input_text2">Услуга:</label>
+                 <select id="input_text2" name="input_text2">
+                    {% for service in services %}
+                    <option>{{ service }}</option>
+                    {% endfor %}
+                </select>
+                <br>
+                <button type="button" onclick="submitForm()">Отправить</button>
+             </form>
+        </div>
+
+
+        <div class="column">
+            <h2>Информация о себе</h2>
+            <form id="clientForm" method="post" >
+                <label for="input_text">ФИО:</label>
+                <input type="text" id="input_text" name="input_text" required>
+                <br>
+                <label for="input_phone">Телефон:</label>
+                <input type="tel" id="input_phone" name="input_phone" required>
+                <br>
+                <label for="email">АдресЭП:</label>
+                <input type="email" id="email" name="email" required>
+                <br>
+                <label for="dob">Дата рождения:</label>
+                <input type="date" id="dob" name="dob" required>
+                <br>
+            </form>
+        </div>
+        <script>
+
+            function submitForm() {
+                var formData1 = new FormData(document.getElementById('myForm'));
+                var formData2 = new FormData(document.getElementById('clientForm'));
+                // Объединяем данные из обеих форм в один объект FormData
+                for (var pair of formData2.entries()) {
+                     formData1.append(pair[0], pair[1]);
                 }
-            };
-            xhr.send(formData1);
-        }
-    </script>
+                var xhr = new XMLHttpRequest(); //
+                xhr.open("POST", "/index", true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        console.log(xhr.responseText);
+                    }
+                };
+                xhr.send(formData1);
+            }
+        </script>
+
 </body>
 </html>
 <style>
@@ -96,7 +101,6 @@
         margin: 0;
          background-color: #fff7e6; /* Цвет фона, замените на ваш выбор */
     }
-
     form {
         text-align: center;
         background-color: #fff; /* Цвет фона формы, замените на ваш выбор */
@@ -104,7 +108,6 @@
         border-radius: 8px; /* Добавление скругленных углов форме */
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Тень для формы */
     }
-
     label, input, select, button {
         margin: 5px;
     }
