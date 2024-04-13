@@ -5,6 +5,12 @@
 
 import requests
 
+import requests
+
+
+
+
+
 url = 'http://localhost/webdemo11/hs/wdoc/note'
 data = {
     "Услуга": "ывыыв",

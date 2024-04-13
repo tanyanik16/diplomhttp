@@ -5,6 +5,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import  build
 import json
 from datetime import datetime
+import Server
 
 app = Flask(__name__)
 
@@ -78,8 +79,6 @@ def получить_данныесправочникУслуги():
         print("Ошибка2:", response.status_code)
         return None
 
-
-
 def получить_данныесправочникСотрудники():
     url = 'http://localhost/salon/hs/wdoc/master'
     username = 'bromuser'
@@ -95,7 +94,6 @@ def получить_данныесправочникСотрудники():
     else:
         print("Ошибка1:", response.status_code)
         return None
-
 
 def получить_данные_документов():
     url = 'http://localhost/salon/hs/wdoc/note'
@@ -123,12 +121,14 @@ def получить_данные_документа_Запись():
         })
     return данные_запись
 
+
+#Авторизация
 @app.route('/')
 def author():
 
     return render_template('authorization.html')
 
-
+#Регистрация
 @app.route('/registr', methods=['GET', 'POST'])
 def registr():
     if request.method == 'POST':
@@ -138,6 +138,7 @@ def registr():
         return f'Пользователь {username} успешно зарегистрирован!'
     return render_template('registr.html')
 
+#Отмена записи
 @app.route('/Cancel')
 def Cancel():
     # Здесь вы можете добавить код для сохранения данных пользователя в базу данных
@@ -147,7 +148,7 @@ def Cancel():
         return "Данные недоступны"
     return render_template('Cancel.html',данные=данные)
 
-
+#Запись на услугу
 @app.route('/index',methods=['GET','POST'])
 def index():
     наименование_услуги = получить_данныесправочникУслуги()
