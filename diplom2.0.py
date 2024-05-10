@@ -120,9 +120,66 @@ def получить_данные_документа_Запись():
             "Сотрудник": документ["Сотрудник"]
 
         })
+
+
     return данные_запись
 
 
+def получить_данные_документа_Запись1():
+    данные_документов = получить_данные_документов()
+    if данные_документов is None:
+        return None
+
+    данные_запись = []
+    сотрудники=получить_данныесправочникСотрудники()
+
+    текущая_дата = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0)
+    конечная_дата = текущая_дата.replace(hour=19)
+    интервал = timedelta(hours=1)
+
+    for сотрудник in сотрудники:
+        сотрудник_в_записи = False
+        название_сотрудника = сотрудник
+        for запись in данные_документов:
+            if запись["Сотрудник"] == сотрудник:
+                сотрудник_в_записи = True
+                break
+        if not сотрудник_в_записи:
+            while текущая_дата < конечная_дата:
+                данные_запись.append({
+                    "Дата": текущая_дата.strftime("%Y-%m-%dT%H:%M"), "Сотрудник": название_сотрудника
+                })
+                текущая_дата += интервал
+        if сотрудник_в_записи:
+            for индекс, запись in enumerate(данные_документов):
+                while текущая_дата != конечная_дата:
+                    новая_дата = datetime.strptime(запись["Дата"], "%Y-%m-%dT%H:%M:%SZ")
+                    # Преобразуем объект datetime обратно в строку в нужном формате с помощью strftime
+                    новая_строка_даты = новая_дата.strftime("%Y-%m-%dT%H:%M")
+                    if новая_строка_даты != текущая_дата.strftime("%Y-%m-%dT%H:%M"):
+                        print(текущая_дата.strftime("%Y-%m-%dT%H:%M") + "текущая дата")
+                        print(новая_строка_даты)
+                        данные_запись.append({
+                                "Дата": текущая_дата.strftime("%Y-%m-%dT%H:%M"),"Сотрудник": название_сотрудника
+                            })
+                        текущая_дата += интервал
+                    else:
+                        текущая_дата += интервал
+                        break
+                    if индекс == len(данные_документов) - 1:
+                        текущая_дата += интервал
+                        while текущая_дата < конечная_дата:
+                            данные_запись.append({
+                                "Дата": текущая_дата.strftime("%Y-%m-%dT%H:%M"), "Сотрудник": название_сотрудника
+                            })
+                            текущая_дата += интервал
+                            print("Это последняя запись:", запись)
+
+
+            текущая_дата = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0)
+
+
+    return данные_запись
 
 def получитьзанятыедатаивремя():
     данные_документов = получить_данные_документов()
@@ -139,67 +196,6 @@ def получитьзанятыедатаивремя():
 
 
 
-# Функция для генерации всех временных слотов с 9:00 до 18:00 в заданном диапазоне дат
-def generate_time_slots(start_date, end_date):
-    time_slots = []
-    current_date = start_date
-
-    while current_date <= end_date:
-        current_time = datetime(current_date.year, current_date.month, current_date.day, 9, 0)
-        end_time = datetime(current_date.year, current_date.month, current_date.day, 18, 0)
-
-        while current_time <= end_time:
-            time_slots.append(current_time)
-            current_time += timedelta(hours=1)
-
-        current_date += timedelta(days=1)
-
-    return time_slots
-
-# Функция для отображения расписания
-def display_schedule(time_slots, данные_документов):
-    for time_slot in time_slots:
-        found = False
-        for документ in данные_документов:
-            дата = datetime.strptime(документ["Дата"], "%Y-%m-%dT%H:%M:%SZ")
-            if дата.hour == time_slot.hour and дата.minute == time_slot.minute:
-                print(f'Время: {time_slot.strftime("%H:%M")}, Сотрудник: {документ["Сотрудник"]}')
-                found = True
-                break
-        if not found:
-            print(f'Время: {time_slot.strftime("%H:%M")}, Сотрудник: Нет записи')
-
-def display_schedule2(time_slots, данные_документов):
-    for time_slot in time_slots:
-        found = False
-        for документ in данные_документов:
-            дата = datetime.strptime(документ["Дата"], "%Y-%m-%dT%H:%M")
-            if дата.hour == time_slot.hour and дата.minute == time_slot.minute:
-                print(f'Время: {time_slot.strftime("%H:%M")}, Сотрудник: {документ["Сотрудник"]}')
-                found = True
-                break
-        if not found:
-            print(f'Время: {time_slot.strftime("%H:%M")}, Сотрудник: Нет записи для {документ["Сотрудник"]}')
-
-def filter_out_past_records(documents_data):
-
-    if documents_data is None:
-        return None
-
-    current_time = datetime.now()
-    filtered_data = []
-
-    for document in documents_data:
-        date_string = document.get("Дата", "")
-        if date_string:
-            date = datetime.strptime(date_string, "%Y-%m-%dT%H:%M")
-            if date >= current_time:
-                filtered_data.append({
-                    "Дата": date.strftime("%Y-%m-%dT%H:%M"),
-                    "Сотрудник": document["Сотрудник"]
-                })
-
-    return filtered_data
 #Авторизация
 @app.route('/')
 def author():
@@ -232,12 +228,12 @@ def index():
     наименование_услуги = получить_данныесправочникУслуги()
     наименование_сотрудники = получить_данныесправочникСотрудники()
     занятые_дата_и_время=получить_данные_документа_Запись()
-
+    cc=получить_данные_документа_Запись1()
 
     render_data = {
         'services': наименование_услуги,
         'masters': наименование_сотрудники,
-        'datatime':занятые_дата_и_время
+        'datatime':cc
     }
 
     # Возвращаем страницу регистрации с передачей данных
@@ -260,8 +256,7 @@ def index():
     end_date = datetime(2024, 5, 10)  # Конечная дата
     данные_запись1 = получить_данные_документа_Запись()
 
-    time_slots = generate_time_slots(start_date, end_date)
-    display_schedule2(time_slots, данные_запись1)
+
 
     #return render_template('index.html', display_schedule=display_schedule)
 
