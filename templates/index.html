@@ -51,6 +51,18 @@
         label, input, select, button {
             margin: 5px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +133,22 @@
                 <br>
             </form>
         </div>
+
+        {% if datatime %}
+        <table border="1">
+            <tr>
+                <th>Время</th>
+            </tr>
+            {% for datatime in datatime %}
+            <tr>
+                <td>{{ datatime }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+        {% else %}
+        <p>Расписание отсутствует</p>
+        {% endif %}
         <script>
 
             function submitForm() {
